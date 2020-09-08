@@ -1,4 +1,5 @@
 import requests
+from sqlalchemy import create_engine
 from requests.adapters import HTTPAdapter
 from settings import Configuration, LogStream
 from requests.packages.urllib3.util.retry import Retry
@@ -28,7 +29,10 @@ class Connection:
     Methods
     -------
     psql_conn(self)
-        Connects to postgresql and returns connection object.
+        Connects to postgresql using psycopg2 and returns connection object.
+    sql_engine(self)
+        Connects to postgresql using sqlalchemy and returns a engine object.
+    requests_retry_session
     """
 
     def __init__(self):
@@ -58,6 +62,16 @@ class Connection:
 
             raise(e)
         return con
+    
+    def sql_engine(self):
+        engine = create_engine(
+            'postgresql://{}:{}@{}:{}/{}'.format(
+            self.user,
+            self.pswd,
+            self.host,
+            self.port,
+            self.database))
+        
 
     def requests_retry_session(
         self,
