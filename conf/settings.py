@@ -61,7 +61,7 @@ class LogStream:
     settings=Settings()
 
     def __init__(self, settings=settings):
-        
+
         self.log_dir=settings.LOG_DIR
 
     def log_stream(self, origin, _log_dir=settings.LOG_DIR):
@@ -72,19 +72,19 @@ class LogStream:
 
             os.makedirs(_log_dir)
 
-        handler=logging.FileHandler(os.path.join(_log_dir, '{}_simple_etl_to_local.log'.format(origin, )))
+        handler=logging.FileHandler(os.path.join(_log_dir, 'All_simple_etl_to_local.log'))
         handler.setLevel(logging.DEBUG)
         formatter=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
-        
-        if log.handlers:
-            
-            log.info('Logging Handler para {} encontrado!'.format(origin))
 
-        else: 
+        if log.handlers:
+
+            log.debug('Logging Handler para {} encontrado!'.format(origin))
+
+        else:
 
             log.addHandler(handler)
-            log.info('Novo logging Handler para {} adicionado!'.format(origin))
+            log.debug('Novo logging Handler para {} adicionado!'.format(origin))
 
         return log
 
@@ -110,7 +110,7 @@ class Configuration:
         loads .yaml file content as dict.
     """
     settings=Settings()
-    
+
     def load_config(self, settings=settings):
         _logstream = LogStream()
         log = _logstream.log_stream(origin=__class__.__name__)
