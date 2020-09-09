@@ -1,13 +1,13 @@
-import requests
+import time
 from sqlalchemy import create_engine
-from requests.adapters import HTTPAdapter
-from settings import Configuration, LogStream
-from requests.packages.urllib3.util.retry import Retry
+from conf.settings import Configuration, LogStream
+from retry_requests import retry
+from requests import Session
 from psycopg2 import connect, OperationalError, Error
 
 
 class Connection:
-   """
+    """
     Responsable for getting connections with databases and APIs.
 
     ...
@@ -62,7 +62,7 @@ class Connection:
 
             raise(e)
         return con
-    
+
     def sql_engine(self):
         engine = create_engine(
             'postgresql://{}:{}@{}:{}/{}'.format(
@@ -71,35 +71,8 @@ class Connection:
             self.host,
             self.port,
             self.database))
-        
 
-    def requests_retry_session(
-        self,
-        retries=3,
-        backoff_factor=0.3,
-        status_forcelist=(401, 500, 502, 504)
-        ):
-        session = requests.Session()
-        retry = Retry(
-            total=retries,
-            read=retries,
-            connect=retries,
-            backoff_factor=backoff_factor,
-            status_forcelist=status_forcelist
-        )
-        adapter = HTTPAdapter(max_retries=retry)
-        session.mount('http://', adapter)
-        session.mount('https://', adapter)
-        return session
-    
-    def requests_retry(self, url):
-        t0 = time.time()
-        try:
-            response = self.requests_retry_session().get(url)
-        except Exception as x:
-            self.log.error('Retried 3 times and failed :', x.__class__.__name__)
-        else:
-            self.log.info('Success retrying : ', response.status_code)
-        finally:
-            t1 = time.time()
-            self.log.info('Retrying session took ', t1 - t0, ' seconds')
+
+    def request_retry_session(self):
+        return retry(Session(), retries=5, backoff_factor=0.2)
+
