@@ -1,38 +1,33 @@
 import pandas as pd;
 
 class Transformer:
-   """
-    A general class used to set path options for the runtime.
-    It is used to access attributes dinamically through its object.
+    """
+    Responsable for all data transformations.
+    Mainly receives a dict and returns a queryable table.
 
     ...
 
     Attributes
     ----------
-    ROOT_DIR : str
-        a formatted string specifying the path to the root's project. 
-        It's determined by the main class' file location.
-    CONFIG_PATH : str
-        a formatted string specifying the path to the project's conf directory.
-        Used to locate stored files like .yaml, .cfg, .ini, etc.
-    LOG_DIR : str
-        a formatted string specifying the path to the project's log directory.
-        Stores the log file.
+    extract_list : list
+        A list containing all dicts from the specified json key.
+    extract : dict
+        The json content as dict
+    key : str
+        key name to be accessed.
 
     Methods
     -------
-    says(sound=None)
-        Prints the animals name and what sound it makes
+    table_maker(self, extract, key)
+        Receives a dict and a key to return a structured table as Pandas dataframe.
     """
 
     def __init__(self):
         pass
-    
 
-    def table_maker(self, extract):
-        extract_list=extract[key]
-        tb_tmp=pd.DataFrame(caged_list)
-        return tb_tmp
 
-        
+    def table_maker(self, extract_list):
+        return pd.DataFrame(extract_list)
+
+
         # columns=['categoria','cbo2002_ocupacao','competencia','fonte','grau_de_instrucao','horas_contratuais','id','idade','ind_trab_intermitente','ind_trab_parcial','indicador_aprendiz','municipio','raca_cor','regiao','salario','saldo_movimentacao','secao','sexo','subclasse','tam_estab_jan','tipo_de_deficiencia','tipo_empregador','tipo_estabelecimento','tipo_movimentacao','uf']

@@ -1,4 +1,5 @@
+import pandas as pd
 
 class Loader:
-
-    df.to_sql('table_name', engine)
+    pass
+    #df.to_sql('table_name', engine)
