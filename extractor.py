@@ -36,7 +36,7 @@ class Extractor:
         try:
             r=my_session.get(self.url)
         except Exception as e:
-            self.log.error('API not responding right. Check the endpoint:{}'.format(self.url))
+            self.log.error('API not responding right. Check the endpoint:{}'.format(self.url), exc_info=True)
             raise(e)
         t1=time.time()
         self.log.info('API connection took {} seconds. STATUS:{}'.format(t1-t0, r.status_code))
