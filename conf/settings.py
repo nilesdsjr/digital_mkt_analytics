@@ -66,14 +66,14 @@ class LogStream:
 
     def log_stream(self, origin, _log_dir=settings.LOG_DIR):
         log=logging.getLogger(origin)
-        log.setLevel(logging.DEBUG)
+        log.setLevel(logging.INFO)
 
         if not os.path.isdir(_log_dir):
 
             os.makedirs(_log_dir)
 
         handler=logging.FileHandler(os.path.join(_log_dir, 'All_simple_etl_to_local.log'))
-        handler.setLevel(logging.DEBUG)
+        handler.setLevel(logging.INFO)
         formatter=logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
         handler.setFormatter(formatter)
 
@@ -122,12 +122,12 @@ class Configuration:
 
         except IOError as e:
 
-            log.error('Carregamento de arquivo yaml falhou. Confira em ' +
+            log.error('yaml file loading has faild. Check it at ' +
                       settings.PG_CONFIG_PATH,
                       exec_info=True)
 
             raise(e)
 
-        log.info('Arquivo de configuration carregado.')
+        log.info('yaml file loaded and configurations found.')
 
         return config

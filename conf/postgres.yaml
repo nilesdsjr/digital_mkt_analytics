@@ -9,6 +9,6 @@ profile:
   postgres:
     host: localhost
     port: 15432
-    database: postgres
+    database: dteng_quero_db
     user: postgres
     pswd: Postgres
