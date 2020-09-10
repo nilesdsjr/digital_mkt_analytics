@@ -71,6 +71,7 @@ class Connection:
             self.host,
             self.port,
             self.database))
+        return engine
 
 
     def request_retry_session(self):
