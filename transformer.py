@@ -1,4 +1,6 @@
-import pandas as pd;
+import pandas as pd
+pd.set_option('display.max_columns', 500)
+import numpy as np
 
 class Transformer:
     """
@@ -27,7 +29,38 @@ class Transformer:
 
 
     def table_maker(self, extract_list):
-        return pd.DataFrame(extract_list)
-
-
-        # columns=['categoria','cbo2002_ocupacao','competencia','fonte','grau_de_instrucao','horas_contratuais','id','idade','ind_trab_intermitente','ind_trab_parcial','indicador_aprendiz','municipio','raca_cor','regiao','salario','saldo_movimentacao','secao','sexo','subclasse','tam_estab_jan','tipo_de_deficiencia','tipo_empregador','tipo_estabelecimento','tipo_movimentacao','uf']
+        df=pd.DataFrame()
+        dt=pd.DataFrame(extract_list)
+        print(dt)
+        dts=dt['salario'].str.replace(',','').str.replace('.','')
+        dt=dt.drop(columns='salario')
+        dt['salario']=dts
+        print(dt)
+        dtypes ={'categoria':'int16',
+                 'cbo2002_ocupacao':'int32',
+                 'competencia':'int32',
+                 'fonte':'int16',
+                 'grau_de_instrucao':'int16',
+                 'horas_contratuais':'int32',
+                 'id':'int16',
+                 'idade':'int16',
+                 'ind_trab_intermitente':'int16',
+                 'ind_trab_parcial':'int16',
+                 'indicador_aprendiz':'int16',
+                 'municipio':'int32',
+                 'raca_cor':'int16',
+                 'regiao':'int16',
+                 'salario':'float32',
+                 'saldo_movimentacao':'int32',
+                 'secao':'string',
+                 'sexo':'int16',
+                 'subclasse':'int32',
+                 'tam_estab_jan':'int16',
+                 'tipo_de_deficiencia':'int16',
+                 'tipo_empregador':'int16',
+                 'tipo_estabelecimento':'int16',
+                 'tipo_movimentacao':'int16',
+                 'uf':'int16'}
+        dt=dt.astype(dtype=dtypes)
+        print(dt.dtypes)
+        return dt

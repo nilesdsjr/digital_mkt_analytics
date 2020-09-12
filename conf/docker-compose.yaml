@@ -7,10 +7,22 @@ services:
       POSTGRES_PASSWORD: "Postgres"
     ports:
       - "15432:5432"
- 
+
     networks:
       - postgres-compose-network
 
-networks: 
+  teste-pgadmin-compose:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "niles.deem@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "Postgres"
+    ports:
+      - "16543:80"
+    depends_on:
+      - teste-postgres-compose
+    networks:
+      - postgres-compose-network
+
+networks:
   postgres-compose-network:
     driver: bridge

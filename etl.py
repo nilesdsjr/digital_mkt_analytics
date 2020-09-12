@@ -23,7 +23,7 @@ class Etl:
             transformation=_tranformation.table_maker(extraction['caged'])
             self.log.info('transform JSON data into one table finished.')
             self.log.info('Starting to load table into database.')
-            load=_load.load_to_db('caged', transformation)
+            load=_load.load_to_db('quero_api', 'caged', transformation)
         else:
             self.log.info('JSON file has Status SUCCESS to FALSE.')
             self.log.info('Starting to transform JSON data into one table.')

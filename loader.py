@@ -1,6 +1,8 @@
+import sqlalchemy
 import pandas as pd
 from connection import Connection
 from conf.settings import LogStream
+
 
 class Loader:
 
@@ -8,7 +10,7 @@ class Loader:
         _log_stream = LogStream()
         self.log = _log_stream.log_stream(origin=__class__.__name__)
 
-    def load_to_db(self, table_name, df):
+    def load_to_db(self, schema, table_name, df):
 
         dt=pd.DataFrame()
         dt=df
@@ -18,7 +20,13 @@ class Loader:
             conn=Connection()
             engine=conn.sql_engine()
             self.log.info('Sending dataframe to database')
-            dt.to_sql(name=table_name, con=engine, if_exists='append', index=False)
+            dt.to_sql(
+                name=table_name,
+                 con=engine,
+                 schema=schema,
+                 if_exists='append',
+                 index=False
+                 )
             self.log.info('Dataframe to database Sent.')
 
         except Exception as e:
