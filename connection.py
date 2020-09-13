@@ -10,8 +10,6 @@ class Connection:
     """
     Responsable for getting connections with databases and APIs.
 
-    ...
-
     Attributes
     ----------
     host : str
@@ -25,7 +23,6 @@ class Connection:
     pswd : str
         user password.
 
-
     Methods
     -------
     psql_conn(self)
@@ -33,6 +30,7 @@ class Connection:
     sql_engine(self)
         Connects to postgresql using sqlalchemy and returns a engine object.
     requests_retry_session
+
     """
 
     def __init__(self):
