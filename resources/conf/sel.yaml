@@ -9,9 +9,15 @@ profile:
   postgres:
     host: localhost
     port: 15432
-    database: dteng_quero_db
+    database: 
     user: postgres
     pswd: Postgres
+  mssql:
+    driver: ODBC Driver 17 for SQL Server
+    server: 
+    database: 
+    user: 
+    pswd: 
 API:
   default:
     url: 
