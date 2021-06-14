@@ -1,14 +1,15 @@
 import time
-import pyodbc
 from sqlalchemy import create_engine
 from settings import Configuration, LogStream
 from retry_requests import retry
 from requests import Session
+from psycopg2 import connect, OperationalError, Error
 
 
 class Connection:
     """
     Responsable for getting connections with databases and APIs.
+
     Attributes
     ----------
     host : str
@@ -21,6 +22,7 @@ class Connection:
         db user.
     pswd : str
         user password.
+
     Methods
     -------
     psql_conn(self)
@@ -28,42 +30,50 @@ class Connection:
     sql_engine(self)
         Connects to postgresql using sqlalchemy and returns a engine object.
     requests_retry_session
+
     """
+
     def __init__(self):
         configuration=Configuration()
         config=configuration.load_config()
         _log_stream = LogStream()
         self.log = _log_stream.log_stream(origin=__class__.__name__)
-        self.psql=config['profile']['postgres']
-        self.mssql=config['profile']['mssql']
+        self.host=config['profile']['postgres']['host']
+        self.port=config['profile']['postgres']['port']
+        self.database=config['profile']['postgres']['database']
+        self.user=config['profile']['postgres']['user']
+        self.pswd=config['profile']['postgres']['pswd']
+        self.url=config['profile']['API']['url']
+
+    def psql_conn(self):
+        try:
+            con=connect(
+            host=self.host,
+            port=self.port,
+            database=self.database,
+            user=self.user,
+            password=self.pswd
+            )
+        except OperationalError as e:
+
+            self.log.error('Postgresql connection failed.',
+                      exec_info=True)
+
+            raise(e)
+        return con
 
     def sql_engine(self):
         engine = create_engine(
             'postgresql://{}:{}@{}:{}/{}'.format(
-            self.psql['user'],
-            self.psql['pswd'],
-            self.psql['host'],
-            self.psql['port'],
-            self.psql['database'])
-            )
+            self.user,
+            self.pswd,
+            self.host,
+            self.port,
+            self.database))
         return engine
 
-    def mssql_conn(self):
-        try:
-            conn=pyodbc.connect(
-                driver=self.mssql['driver'],
-                server=self.mssql['server'],
-                database=self.mssql['database'],
-                uid=self.mssql['user'],
-                pwd=self.mssql['pswd']
-                )
-        except pyodbc.DatabaseError as e:
-            self.log.error('MS SQL Server connection failed.',
-                      exec_info=True)
-            raise(e)
-        return conn
 
     def request_retry_session(self):
-        rt=retry(Session(), retries=5, backoff_factor=0.2)
-        return rt.request_retry_session()
+        return retry(Session(), retries=5, backoff_factor=0.2)
+    
 

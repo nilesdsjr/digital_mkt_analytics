@@ -1,7 +1,7 @@
-from transformer import Transformer
-from loader import Loader
-from extractor import Extractor
-from conf.settings import LogStream
+from transform import Transform
+from load import Load
+from extract import Extract
+from settings import LogStream
 
 class Etl:
 

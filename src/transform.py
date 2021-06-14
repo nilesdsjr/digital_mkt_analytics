@@ -1,7 +1,7 @@
 import pandas as pd
-from conf.settings import LogStream
+from settings import LogStream
 
-class Transformer:
+class Transform:
     """
     Responsable for all data transformations.
     Mainly receives a dict and returns a queryable table.
