@@ -16,11 +16,6 @@ class Etl:
         self.local_paths = settings.LOCAL_PATHS
         configuration = Configuration()
         self.config = configuration.load_config()
-        self.local_files = {
-            'facebook_ads_media_costs.jsonl': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'facebook_ads_media_costs.jsonl'),
-            'google_ads_media_costs.jsonl': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'google_ads_media_costs.jsonl'),
-            'pageviews.txt': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'pageviews.txt')
-        }
 
     def run(self):
         """ Executes the ETL.
@@ -33,14 +28,17 @@ class Etl:
         ------
         Nothing
         """
-        self.log.info('\n######## STARTING SIMPLE ETL TO LOCAL DB #########\n')
+        self.log.info('\n\n######## STARTING SIMPLE ETL TO LOCAL DB #########\n')
         self.log.info('Initiating classes.')
-        _extraction=Extract()
-        _tranformation=Transform()
+        _extract=Extract()
+        _transform=Transform()
         _load=Load()
-        self.log.info('Starting extraction of data from Gihub.')
-        extraction=_extraction.url_extract(self.config['API']['default']['url'])
-        #extrair do zip
+        self.log.info('Starting extraction of data from Github.')
+        extraction=_extract.url_extract(self.config['API']['default']['url'])
+        self.log.info('Trying to unzip files {}.'.format(extraction))
+        _transform.unzip_file(extraction)
+        self.log.info('Transforming extracted data into dataframes.')
+
         #carregar os arquivos
         #transformar em tabela
         #subir para o db
