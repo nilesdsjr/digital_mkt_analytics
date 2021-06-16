@@ -10,24 +10,7 @@ class Transform:
     """
     Responsable for all data transformations.
     Mainly receives a dict and returns a queryable table.
-
-    ...
-
-    Attributes
-    ----------
-    extract_list : list
-        A list containing all dicts from the specified json key.
-    extract : dict
-        The json content as dict
-    key : str
-        key name to be accessed.
-    df : Pandas' DataFrame.
-        Used different moments to load and manipulate the data from extract_list.
-    dts : Pandas' DataFrame
-       Removed comma and dot at the salario column. It stores only column salario.
-    dtypes : dict
-        Dictionary with all data types defined. It is used as parameters to convert datatypes.
-
+    
     Methods
     -------
     table_maker(self, extract, key)
@@ -39,7 +22,12 @@ class Transform:
         self.log = _log_stream.log_stream(origin=__class__.__name__)
         settings = Settings()
         self.local_paths = settings.LOCAL_PATHS
-
+        self.local_files = {
+            'facebook_ads_media_costs.jsonl': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'facebook_ads_media_costs.jsonl'),
+            'google_ads_media_costs.jsonl': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'google_ads_media_costs.jsonl'),
+            'pageviews.txt': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'pageviews.txt'),
+            'customer_leads_funnel.csv': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'customer_leads_funnel.csv')
+        }
 
     def table_maker(self, extract_list):
         df=pd.DataFrame()
@@ -79,7 +67,7 @@ class Transform:
     def unzip_file(self, zip_path):
         try:
             with ZipFile(zip_path, 'r') as zip_ref:
-                zip_ref.extractall(os.path.join(self.local_paths['DATA_DIR'], 'datasets'))
+                zip_ref.extractall(self.local_paths['DATA_DIR'])
         except Exception as e:
             self.log.error('Something wrong unziping file {}'.format(zip_path), exc_info=True)
             raise(e)
@@ -106,13 +94,16 @@ class Transform:
     def json2df(self, json_path):
         """Reads a .json file and loads as pandas DataFrame.
   
-        Args:
+        Arguments
+        ---------
           json_path: Absolut path to the .json file.
   
-        Returns:
+        Returns
+        -------
           A pandas Dataframe.
   
-        Raises:
+        Raises
+        -------
           IOError: If something breaks during loading from local fils system.
         """
         try:
@@ -141,3 +132,56 @@ class Transform:
             self.log.error('Impossible to read file at: {}'.format(txt_path), exc_info=True)
             raise(e)
         return txt_str
+
+    def fb_ads_table(self):
+
+        """ Reads a .json file and structures it into a dataframe table.
+        
+            This method is specific to transform the facebook_ads_media_costs.jsonl
+
+        Returns
+        -------
+        pandas.Dataframe Object
+            A dataframe with a formatted table containing the facebook ads data.
+            
+        Raises
+        ------
+        Exception
+            Re-raises lib error.
+        """
+        fb_json = self.json2df(self.local_files['facebook_ads_media_costs.jsonl'])
+        return fb_df
+
+    def gl_ads_table(self):
+        """ Reads a .json file and structures it into a dataframe table.
+ 
+        Returns
+        -------
+        pandas.Dataframe Object
+            A dataframe with a formatted table containing the Google ads data.
+            
+        Raises
+        ------
+        Exception
+            Re-raises requests lib error.
+        """
+        return gl_df
+
+    def pgviews_table(self):
+        """ Reads a .txt file and structures it into a dataframe table.
+        
+        Parameters
+        ----------
+        url : str
+            a formatted string specifying the API endpoint.
+
+        Returns
+        -------
+        requests.Response Object
+            
+        Raises
+        ------
+        Exception
+            Re-raises requests lib error.
+        """
+        return pg_df
