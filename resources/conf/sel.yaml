@@ -20,4 +20,4 @@ profile:
     pswd: 
 API:
   default:
-    url: https://github.com/saraivajr/challenge/blob/master/data-engineering/full-challenge/datasets.zip
+    url: https://github.com/saraivajr/challenge/raw/master/data-engineering/full-challenge/datasets.zip
