@@ -28,7 +28,7 @@ class Settings:
     def __init__(self):
 
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
-        self.settings = {
+        self.LOCAL_PATHS = {
             'CONFIG_PATH': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)), 'resources', 'conf'),
             'YAML_CONFIG_PATH': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)),'resources', 'conf', 'sel.yaml'),
             'LOG_DIR': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)), 'logs'),
@@ -57,7 +57,7 @@ class LogStream:
     def __init__(self):
         pass
 
-    def log_stream(self, origin, _log_dir=settings.LOG_DIR):
+    def log_stream(self, origin, _log_dir=settings.LOCAL_PATHS['LOG_DIR']):
 
         log=logging.getLogger(origin)
         log.setLevel(logging.INFO)
@@ -97,7 +97,7 @@ class Configuration:
         _logstream = LogStream()
         self.log = _logstream.log_stream(origin=__class__.__name__)
 
-    def load_config(self, fl_config_path=settings.YAML_CONFIG_PATH):
+    def load_config(self, fl_config_path=settings.LOCAL_PATHS['YAML_CONFIG_PATH']):
 
         try:
 
