@@ -43,7 +43,6 @@ class Connection:
         self.database=config['profile']['postgres']['database']
         self.user=config['profile']['postgres']['user']
         self.pswd=config['profile']['postgres']['pswd']
-        self.url=config['profile']['API']['url']
 
     def psql_conn(self):
         try:
