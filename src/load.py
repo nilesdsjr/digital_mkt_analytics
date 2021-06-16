@@ -5,12 +5,27 @@ from settings import LogStream
 
 
 class Load:
+    """Responsable for loading data into systems.
+    """
 
     def __init__(self):
         _log_stream = LogStream()
         self.log = _log_stream.log_stream(origin=__class__.__name__)
 
     def load_to_db(self, schema, table_name, df):
+        """Loads data from pandas dataframe to Postgres
+    
+        Args:
+          schema: Name of the destination schema.
+          table_name: Name of the table.
+          df: Dataframe with the data that is going to the db.
+    
+        Returns:
+          Nothing.
+    
+        Raises:
+          Exception: Re-raising pandas exception.
+        """
         dt=pd.DataFrame()
         dt=df
         try:
@@ -31,28 +46,3 @@ class Load:
         except Exception as e:
             self.log.error('Load dataframe to database Failed.', exc_info=True)
             raise(e)
-    
-    def csv2df(self, csv_path):
-        try:
-            df = pd.read_csv(csv_path)
-        except IOError as e:
-            self.log.error('Impossible to read file at: {}'.format(csv_path), exc_info=True)
-            raise(e)
-        return df
-
-    def json2df(self, json_path):
-        try:
-            df = pd.read_json(json_path)
-        except IOError as e:
-            self.log.error('Impossible to read file at: {}'.format(json_path), exc_info=True)
-            raise(e)
-        return df
-
-    def txt2str(self, txt_path):
-        try:
-            with open(txt_path, 'r') as f:
-                txt_str = f.read()
-        except IOError as e:
-            self.log.error('Impossible to read file at: {}'.format(txt_path), exc_info=True)
-            raise(e)
-        return txt_str
