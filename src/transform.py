@@ -1,5 +1,5 @@
 import os
-
+import json
 import pandas as pd
 from zipfile import ZipFile
 
@@ -72,6 +72,26 @@ class Transform:
             self.log.error('Something wrong unziping file {}'.format(zip_path), exc_info=True)
             raise(e)
     
+    def txt2str(self, txt_path):
+        """Reads a .txt file and loads as string.
+  
+        Args:
+          txt_path: Absolut path to the .txt file.
+  
+        Returns:
+          str object.
+  
+        Raises:
+          IOError: If something breaks during loading from local fils system.
+        """
+        try:
+            with open(txt_path, 'r') as f:
+                txt_str = f.read()
+        except IOError as e:
+            self.log.error('Impossible to read file at: {}'.format(txt_path), exc_info=True)
+            raise(e)
+        return txt_str
+    
     def csv2df(self, csv_path):
         """Reads a .csv file and loads as pandas DataFrame.
   
@@ -107,31 +127,16 @@ class Transform:
           IOError: If something breaks during loading from local fils system.
         """
         try:
-            df = pd.read_json(json_path)
+            df = pd.DataFrame()
+            json_str = self.txt2str(json_path)
+            for line in iter(json_str.splitlines()):
+                json_dict = json.loads(line)
+                df = df.append(json_dict, ignore_index=True)
         except IOError as e:
             self.log.error('Impossible to read file at: {}'.format(json_path), exc_info=True)
             raise(e)
         return df
 
-    def txt2str(self, txt_path):
-        """Reads a .txt file and loads as string.
-  
-        Args:
-          txt_path: Absolut path to the .txt file.
-  
-        Returns:
-          str object.
-  
-        Raises:
-          IOError: If something breaks during loading from local fils system.
-        """
-        try:
-            with open(txt_path, 'r') as f:
-                txt_str = f.read()
-        except IOError as e:
-            self.log.error('Impossible to read file at: {}'.format(txt_path), exc_info=True)
-            raise(e)
-        return txt_str
 
     def fb_ads_table(self):
 
@@ -149,7 +154,11 @@ class Transform:
         Exception
             Re-raises lib error.
         """
-        fb_json = self.json2df(self.local_files['facebook_ads_media_costs.jsonl'])
+        try:
+            fb_df = self.json2df(self.local_files['facebook_ads_media_costs.jsonl'])
+        except Exception as e:
+            self.log.error('Impossible to create dataframe table.', exc_info=True)
+            raise(e)
         return fb_df
 
     def gl_ads_table(self):
@@ -165,6 +174,11 @@ class Transform:
         Exception
             Re-raises requests lib error.
         """
+        try:
+            gl_df = self.json2df(self.local_files['google_ads_media_costs.jsonl'])
+        except Exception as e:
+            self.log.error('Impossible to create dataframe table.', exc_info=True)
+            raise(e)
         return gl_df
 
     def pgviews_table(self):
