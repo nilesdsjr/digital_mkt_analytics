@@ -107,5 +107,5 @@ class Configuration:
             self.log.error('yaml file load has failed. Check it at {}'.format(
                       fl_config_path), exc_info=True)
             raise(e)
-        self.log.info('yaml file loaded and configurations found.')
+        self.log.debug('yaml file loaded and configurations found.')
         return config

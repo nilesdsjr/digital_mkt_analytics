@@ -6,7 +6,7 @@ from settings import LogStream, Settings
 
 class Extract:
     """
-    Responsable for the web extraction of web data.
+    Responsable for the web extraction of data.
 
     """
     def __init__(self):
