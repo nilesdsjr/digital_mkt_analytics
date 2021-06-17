@@ -25,7 +25,7 @@ class Transform:
         self.local_files = {
             'facebook_ads_media_costs.jsonl': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'facebook_ads_media_costs.jsonl'),
             'google_ads_media_costs.jsonl': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'google_ads_media_costs.jsonl'),
-            'pageviews.txt': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'pageviews.txt'),
+            'pageview.txt': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'pageview.txt'),
             'customer_leads_funnel.csv': os.path.join(self.local_paths['DATA_DIR'], 'datasets', 'customer_leads_funnel.csv')
         }
 
@@ -130,8 +130,8 @@ class Transform:
             df = pd.DataFrame()
             json_str = self.txt2str(json_path)
             for line in iter(json_str.splitlines()):
-                json_dict = json.loads(line)
-                df = df.append(json_dict, ignore_index=True)
+                line_dict = json.loads(line)
+                df = df.append(line_dict, ignore_index=True)
         except IOError as e:
             self.log.error('Impossible to read file at: {}'.format(json_path), exc_info=True)
             raise(e)
@@ -172,7 +172,7 @@ class Transform:
         Raises
         ------
         Exception
-            Re-raises requests lib error.
+            Re-raises lib error.
         """
         try:
             gl_df = self.json2df(self.local_files['google_ads_media_costs.jsonl'])
@@ -181,13 +181,119 @@ class Transform:
             raise(e)
         return gl_df
 
-    def pgviews_table(self):
-        """ Reads a .txt file and structures it into a dataframe table.
+    def pgviews_access_cleanse(self, pg_value):
+        """ Reads a string value to remove unused data.
         
         Parameters
         ----------
-        url : str
-            a formatted string specifying the API endpoint.
+        pg_value : str
+            String value that shows access point from user.
+
+        Returns
+        -------
+        item: str
+            Formatted str
+            
+        Raises
+        ------
+        Exception
+            Returns null.
+        """
+        try:
+            item = pg_value.split('?', 1)[1]
+        except:
+            return
+        return item
+ 
+    def pgviews_device_id_cleanse(self, pg_value):
+        """ Reads a string value to remove unused data.
+        
+        Parameters
+        ----------
+        pg_value : str
+            String value that shows the device id from user.
+
+        Returns
+        -------
+        item: str
+            Formatted str
+            
+        Raises
+        ------
+        Exception
+            Returns null.
+        """
+        try:
+            item = pg_value.split(' device_id:', 1)[1]
+        except:
+            return
+        return item    
+
+    def pgviews_referer_cleanse(self, pg_value):
+        """ Reads a string value to remove unused data.
+        
+        Parameters
+        ----------
+        pg_value : str
+            String value that shows referer url from user.
+
+        Returns
+        -------
+        item: str
+            Formatted str
+            
+        Raises
+        ------
+        Exception
+            Returns null.
+        """
+        try:
+            item = pg_value.split(' referer:', 1)[1]
+        except:
+            return
+        return item  
+
+    def pgview_table(self):
+        """ Reads a .txt file and structures it into a dataframe table.
+
+        Returns
+        -------
+        pandas.Dataframe Object
+            
+        Raises
+        ------
+        Exception
+            Re-raises lib error.
+        """
+        pg_str = self.txt2str(self.local_files['pageview.txt'])
+        pg_lines = list()
+        pg_items = list()
+        pg_dicts = {}
+        #Breaks string by breakline and adds as a list item to pg_lines
+        for line in iter(pg_str.splitlines()):
+            pg_lines.append(line)
+        #Breaks the whole line into 3 smaller items and adds a list to a list.
+        for item in pg_lines:
+            items = item.split('|')
+            pg_items.append(items)
+        #Extracts the smaller list from a list of lines and creates a list of dicts.
+        for index, value in enumerate(pg_items):
+            access = self.pgviews_access_cleanse(value[0])
+            device_id = self.pgviews_device_id_cleanse(value[1])
+            referer = self.pgviews_referer_cleanse(value[2])
+            pg_dicts[index]={'access': access, 'device_id': device_id, 'referer': referer}
+        pg_df = pd.DataFrame.from_dict(pg_dicts, 'index')
+
+        dtypes = {
+            'access': 'string',
+            'device_id': 'string',
+            'referer': 'string'
+            }
+        pg_df=pg_df.astype(dtype=dtypes)
+        return pg_df
+
+    def c_lead_table(self):
+        """ Reads a .csv file and structures it into a dataframe table.
 
         Returns
         -------
@@ -197,5 +303,10 @@ class Transform:
         ------
         Exception
             Re-raises requests lib error.
-        """
-        return pg_df
+        """        
+        try:
+            ld_df = self.csv2df(self.local_files['customer_leads_funnel.csv'])
+        except Exception as e:
+            self.log.error('Impossible to create dataframe table.', exc_info=True)
+            raise(e)
+        return ld_df
