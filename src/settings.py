@@ -30,7 +30,7 @@ class Settings:
         self.ROOT_DIR = os.path.dirname(os.path.abspath(__file__))
         self.LOCAL_PATHS = {
             'CONFIG_PATH': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)), 'resources', 'conf'),
-            'YAML_CONFIG_PATH': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)),'resources', 'conf', 'sel.yaml'),
+            'YAML_CONFIG_PATH': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)),'resources', 'conf', 'dma.yaml'),
             'LOG_DIR': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)), 'logs'),
             'DATA_DIR': os.path.join(os.path.abspath(os.path.join(self.ROOT_DIR, os.pardir)), 'data')
         }
