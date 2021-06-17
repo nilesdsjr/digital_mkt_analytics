@@ -9,7 +9,7 @@ profile:
   postgres:
     host: localhost
     port: 15432
-    database: 
+    database: mkt_db
     user: postgres
     pswd: Postgres
   mssql:
