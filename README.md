@@ -5,14 +5,14 @@ Simple python Analytics application running data ingestion and ETLs to deliver a
 the application intents to ingest multiple data that are available on the internet, clean it and load it to a local postgres database. It also creates one big table containing all related data.
 
 The datasources are:
-- google_ads_media_costs.jsonl
--- Google ads costs
-- facebook_ads_media_costs.jsonl
--- Facebook ads costs
-- pageviews.txt
--- Ads accessed by users
-- customer_leads_funnel.csv 
--- User's lead Analytical table 
+<center>
+|Source          |Details                                       |
+|----------------|---------------------------------------------|
+|google_ads_media_costs.jsonl   |`Google ads costs`            |
+|facebook_ads_media_costs.jsonl |`Facebook ads costs`          |
+|pageviews.txt                  |`Ads accessed by users`       |
+|customer_leads_funnel.csv      |`User's lead Analytical table`|
+</center>
 
 ## Installation
 Use the package manager pip to install dependency packages listed on requirements.txt file. Remember that it needs to access the **artifactory** repository.
