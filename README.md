@@ -6,12 +6,14 @@ the application intents to ingest multiple data that are available on the intern
 
 The datasources are:
 <center>
-|Source          |Details                                       |
+  
+|Source          |Details                                      |
 |----------------|---------------------------------------------|
 |google_ads_media_costs.jsonl   |`Google ads costs`            |
 |facebook_ads_media_costs.jsonl |`Facebook ads costs`          |
 |pageviews.txt                  |`Ads accessed by users`       |
 |customer_leads_funnel.csv      |`User's lead Analytical table`|
+  
 </center>
 
 ## Installation
