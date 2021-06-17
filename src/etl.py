@@ -1,4 +1,5 @@
 import os
+import gc
 
 from transform import Transform
 from load import Load
@@ -30,24 +31,35 @@ class Etl:
         """
         self.log.info('\n\n######## STARTING SIMPLE ETL TO LOCAL DB #########\n')
         self.log.info('Initiating classes.')
-        _extract=Extract()
-        _transform=Transform()
-        _load=Load()
+        extract=Extract()
+        transform=Transform()
+        load=Load()
         self.log.info('Starting extraction of data from Github.')
-        extraction=_extract.url_extract(self.config['API']['default']['url'])
+        extraction=extract.url_extract(self.config['API']['default']['url'])
         self.log.info('Trying to unzip files {}.'.format(extraction))
-        _transform.unzip_file(extraction)
+        transform.unzip_file(extraction)
         self.log.info('Transforming extracted data into dataframes.')
-
-        #carregar os arquivos
-        #transformar em tabela
-        #subir para o db
-        
-        #load=_load.load_to_db('quero_api', 'caged', transformation)
-
-
-        self.log.info('######## FINISHED SIMPLE ETL TO LOCAL DB #########')
-
+        df_fb = transform.fb_ads_table()
+        self.log.info('Uploading table facebook_ads_media_costs')
+        load.load_to_db('stage', 'facebook_ads_media_costs', df_fb)
+        del df_fb
+        gc.collect()
+        df_gl = transform.gl_ads_table()
+        self.log.info('Uploading table google_ads_media_costs')
+        load.load_to_db('stage', 'google_ads_media_costs', df_gl)
+        del df_gl
+        gc.collect()
+        df_pg = transform.pgview_table()
+        self.log.info('Uploading table pageviews')
+        load.load_to_db('stage', 'pageviews', df_pg)
+        del df_pg
+        gc.collect()
+        df_ld = transform.c_lead_table()
+        self.log.info('Uploading table customer_leads_funnel')
+        load.load_to_db('stage', 'customer_leads_funnel', df_ld)
+        del df_ld
+        gc.collect()
+        self.log.info('Finished ETL execution.')
 
 if __name__ == '__main__':
 
