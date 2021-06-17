@@ -33,12 +33,13 @@ class Load:
             self.log.info('Starting connection with database')
             conn=Connection()
             engine=conn.sql_engine()
-            self.log.info('Sending dataframe c database')
+            self.log.info('Sending dataframe to database')
             dt.to_sql(
                 name=table_name,
                  con=engine,
+                 method='multi',
                  schema=schema,
-                 if_exists='append',
+                 if_exists='replace',
                  index=False
                  )
             self.log.info('Dataframe to database Sent.')
